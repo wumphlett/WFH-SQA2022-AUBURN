@@ -1,1 +1,3 @@
 *.pyc
+vulnerabilities.csv
+/.idea
