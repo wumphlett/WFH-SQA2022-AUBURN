@@ -1,3 +1,6 @@
 *.pyc
-vulnerabilities.csv
+
 /.idea
+
+vulnerabilities.csv
+ml-attack.log

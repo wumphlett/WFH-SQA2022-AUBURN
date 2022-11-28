@@ -1,11 +1,16 @@
-import constants 
-import time 
-import datetime 
-import os 
+from . import constants
+import time
+import datetime
+import os
 import pandas as pd
-import py_parser 
-import numpy as np 
-import label_perturbation_main
+from . import py_parser
+import numpy as np
+from . import label_perturbation_main
+
+import logging
+
+logging.basicConfig(filename="ml-attack.log", level=logging.DEBUG)
+logger = logging.getLogger("generation")
 
 
 def giveTimeStamp():
@@ -15,23 +20,28 @@ def giveTimeStamp():
 
 
 def generateUnitTest(algo, attack_type):
-    file_name = "../../output/attack_unit_test/test_attack_" + algo + ".py"
-    with open(file_name,"w+") as file:
-        file.write("import unittest\n")
-        file.write("import label_perturbation_main\n")
-        file.write("import " + algo + "\n")
-        file.write("\n\n")
-        file.write("class TestAttack( unittest.TestCase ):\n")
-        file.write("\tdef test_attack(self):\n")
-        file.write("\t\tchange_unit = 0.5\n")
-        file.write("\t\tprecision4model1, recall4model1, fscore4model1, auc4model1 = label_perturbation_main.run_experiment(" + "algo" + ")\n")
-        if (attack_type == 'random'):
-            file.write("\t\tprecision4model2, recall4model2, fscore4model2, auc4model2 = label_perturbation_main.run_random_perturbation_experiment(change_unit, "+ "algo" + ")\n")
-        if (attack_type == 'loss'):
-            file.write("\t\tprecision4model2, recall4model2, fscore4model2, auc4model2 = label_perturbation_main.run_loss_based_perturbation_experiment(change_unit, "+ "algo" + ")\n")
-        if (attack_type == 'prob'):
-            file.write("\t\tprecision4model2, recall4model2, fscore4model2, auc4model2 = label_perturbation_main.run_prob_based_perturbation_experiment(change_unit, 10, 10, "+ "algo" + ")\n")
-        file.write("\t\tself.assertEqual(auc4model1, auc4model2, \"DECREASE IN AUC VALUE ... POSSIBLE ATTACK?\"  )\n")
+    logger.info(f"generateUnitTest({algo}, {attack_type})")
+    try:
+        file_name = "../../output/attack_unit_test/test_attack_" + algo + ".py"
+        with open(file_name,"w+") as file:
+            file.write("import unittest\n")
+            file.write("import label_perturbation_main\n")
+            file.write("import " + algo + "\n")
+            file.write("\n\n")
+            file.write("class TestAttack( unittest.TestCase ):\n")
+            file.write("\tdef test_attack(self):\n")
+            file.write("\t\tchange_unit = 0.5\n")
+            file.write("\t\tprecision4model1, recall4model1, fscore4model1, auc4model1 = label_perturbation_main.run_experiment(" + "algo" + ")\n")
+            if (attack_type == 'random'):
+                file.write("\t\tprecision4model2, recall4model2, fscore4model2, auc4model2 = label_perturbation_main.run_random_perturbation_experiment(change_unit, "+ "algo" + ")\n")
+            if (attack_type == 'loss'):
+                file.write("\t\tprecision4model2, recall4model2, fscore4model2, auc4model2 = label_perturbation_main.run_loss_based_perturbation_experiment(change_unit, "+ "algo" + ")\n")
+            if (attack_type == 'prob'):
+                file.write("\t\tprecision4model2, recall4model2, fscore4model2, auc4model2 = label_perturbation_main.run_prob_based_perturbation_experiment(change_unit, 10, 10, "+ "algo" + ")\n")
+            file.write("\t\tself.assertEqual(auc4model1, auc4model2, \"DECREASE IN AUC VALUE ... POSSIBLE ATTACK?\"  )\n")
+    except Exception as exc:
+        logger.error(f"generateUnitTest({algo}, {attack_type}) FAILURE {exc}")
+        raise exc
 
 
 def generateAttack(inp_dir, delta):

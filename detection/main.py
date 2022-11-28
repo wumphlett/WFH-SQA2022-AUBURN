@@ -1,9 +1,9 @@
-import constants 
-import time 
-import datetime 
-import os 
+from . import constants
+import time
+import datetime
+import os
 import pandas as pd
-import py_parser 
+from . import py_parser
 import numpy as np 
 
 

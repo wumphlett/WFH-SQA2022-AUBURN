@@ -1,6 +1,6 @@
 import unittest
-import knn
-import main
+from . import knn
+from . import main
 from sklearn.datasets import load_digits
 from sklearn.neighbors import KNeighborsClassifier
 
